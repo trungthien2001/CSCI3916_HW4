@@ -289,9 +289,6 @@ router.route('/movies')
             })
         }
     })
-    .all(function(req, res) {
-        return res.status(403).json({success: false, message: "This HTTP method is not supported. Only GET, POST, PUT, and DELETE are supported."});
-    });
 
 router.route('/reviews')
     .post(authJwtController.isAuthenticated, function(req, res) {
