@@ -247,39 +247,24 @@ router.route('/movies')
             });
         }
     })
-    .get(authJwtController.isAuthenticated, function (req, res) {
+    .get(authJwtController.isAuthenticated, function (req, res)
+    {
+        console.log(req.body);
+        res = res.status(200);
 
-        if (req.query && req.query.reviews && req.query.reviews === "true") {
-
-            Movie.find(function (err, movies) {
-                if (err) {
-                    return res.status(403).json({success: false, message: "Unable to get reviews for titles"});
-                } else if (!movies) {
-                    return res.status(403).json({success: false, message: "Unable to find titles"});
-                } else {
-
-                    Movie.aggregate()
-                        // .match({_id: mongoose.Types.ObjectId(movie._id)})
-                        .lookup({from: 'reviews', localField: '_id', foreignField: 'movie_id', as: 'reviews'})
-                        .addFields({averaged_rating: {$avg: "$reviews.rating"}})
-                        .exec(function (err, mov) {
-                            if (err) {
-                                return res.status(403).json({
-                                    success: false,
-                                    message: "The movie title parameter was not found."
-                                });
-                            } else {
-                                mov.sort((a,b) => { return b.averaged_rating - a.averaged_rating; });
-                                return res.status(200).json({
-                                    success: true,
-                                    message: "Movie title passed in and it's reviews were found.",
-                                    movie: mov
-                                });
-                            }
-                        })
-                }
-            })
+        if (req.get('Content-Type'))
+        {
+            res = res.type(req.get('Content-Type'));
         }
+        Movie.find({title: req.params.title}).exec(function (err, movie)
+        {
+            if (err)
+            {
+                res.send(err);
+            }
+            res.json(movie);
+        })
+    })
 
         else {
             Movie.find(function(err, movies) {
