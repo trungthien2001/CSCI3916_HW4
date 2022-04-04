@@ -148,7 +148,7 @@ router.route('/movies/:movie_title')
                 }
             })
         } else {
-            Movie.find({title: req.params.movie_title}).select("title year_released genre actors").exec(function (err, movie) {
+            Movie.find({title: req.params.movie_title}).select("title yearReleased genre actors").exec(function (err, movie) {
                 if (err) {
                     return res.status(403).json({success: false, message: "Unable to retrieve title passed in."});
                 }
@@ -194,13 +194,13 @@ router.route('/search/:key_word')
 
 router.route('/movies')
     .post(authJwtController.isAuthenticated, function (req, res) {
-        if (!req.body.title || !req.body.year_released || !req.body.genre || !req.body.actors[0] || !req.body.actors[1] || !req.body.actors[2]) {
+        if (!req.body.title || !req.body.yearReleased || !req.body.genre || !req.body.actors[0] || !req.body.actors[1] || !req.body.actors[2]) {
             return res.json({ success: false, message: 'Please include all information for title, year released, genre, and 3 actors.'});
         } else {
             var movie = new Movie();
 
             movie.title = req.body.title;
-            movie.year_released = req.body.year_released;
+            movie.yearReleased = req.body.yearReleased;
             movie.genre = req.body.genre;
             movie.actors = req.body.actors;
 
@@ -282,23 +282,6 @@ router.route('/movies')
         }
 
         else {
-            // Movie.find(req.body.find_title).select("title year_released genre actors").exec(function (err, movie) {
-            //     if (err) {
-            //         return res.status(403).json({success: false, message: "Unable to retrieve title passed in."});
-            //     }
-            //     if (movie && movie.length > 0) {
-            //         return res.status(200).json({
-            //             success: true,
-            //             message: "Successfully retrieved movie.",
-            //             movie: movie
-            //         });
-            //     } else {
-            //         return res.status(404).json({
-            //             success: false,
-            //             message: "Unable to retrieve a match for title passed in."
-            //         });
-            //     }
-            // })
             Movie.find(function(err, movies) {
                 if (err) res.send(err);
 
